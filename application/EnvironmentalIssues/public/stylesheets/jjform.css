@@ -1,0 +1,146 @@
+.container-full {
+    border-radius: 25px;
+    height:100%;
+    background: rgba(255, 255, 255, 0.95);
+    margin-left: 35px;
+    margin-right: 35px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    padding-left: 15px;
+    padding-right: 15px;
+    max-width: 500px;
+
+  }
+h1{
+    text-align: center;
+    font-size: 28px;
+    font-weight: 1000;
+}
+.unique{
+    background-image: url(https://www.tokkoro.com/picsup/3336228-twilight-people-beach-night.jpg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    overflow: auto;  
+    height:auto;
+    margin: 0;
+    padding: 0;
+}
+.form{
+    padding-left: 35px;
+    padding-right: 35px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 16px;
+    box-align: center;
+    overflow: auto;
+}
+.contact{
+    background: rgba(223, 223, 223, 0.70);
+}
+#spacing{
+    margin-top: 30px;
+}
+
+.title{
+    text-align: center;
+}
+input[type=submit]{
+    border-radius: 10px;
+    width:100%;
+    background-color:white;
+    color:black;
+}
+input[type=submit]:hover{
+    border-radius: 10px;
+    background-color: black;
+    color:white;
+}
+input[type=reset]{
+    border-radius: 10px;
+    width:100%;
+    background-color:white;
+    color:black;
+}
+input[type=reset]:hover{
+    border-radius: 10px;
+    background-color: black;
+    color:white;
+}
+input[type=text]{
+    border-radius: 10px;
+
+    width:100%;
+}
+input[type=email]{
+    border-radius: 10px;
+    width:100%;
+}
+
+input[type = tel]{
+    border-radius: 10px;
+    width: 100%;
+}
+
+.checkbox input[type="checkbox"] {
+    position: absolute;
+    top: 30%;
+    right: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+
+  }
+select{
+    width:100%;
+    border-radius: 10px;
+}
+
+.button {
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    width:100%
+  }
+  
+  .button:hover {
+    background-color: green; /* Green */
+    color: white;
+  }
+
+  .g-recaptcha{
+      display: inline-block;
+  }
+  .text-xs-center{
+      text-align: center;
+  }
+
+
+  #map {
+    margin: 20px;
+    padding: 20px;
+    min-height: 320px;
+    min-width: 90%;
+    
+    display: inline-block;
+  }
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-image: url(https://www.tokkoro.com/picsup/3336228-twilight-people-beach-night.jpg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    overflow: auto;
+    background-repeat: repeat-y;  
+    height:auto;
+  }
+.border{
+    border-radius: 10px;
+    border: 2px solid black;
+    padding: 20px; 
+}
+

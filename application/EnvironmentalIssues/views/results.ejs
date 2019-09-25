@@ -1,0 +1,472 @@
+<!--
+    Author: Carlos Lopez 
+    Purpose/Function: rendering of the entire search page using several API's as well as multiple Javascript Functions
+    Date: 8/6/2019
+ -->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <%- include ../views/partials/head.ejs%>
+    <script defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhW3fD9MZfY_lCzOvgla3S1aIi4PpuQyQ&callback=initMap"></script>
+    <script src="https://unpkg.com/blob-util/dist/blob-util.min.js"></script>
+</head>
+
+<header>
+    <% include ../views/partials/header.ejs%>
+</header>
+
+<body>
+    <!-- STANDARD IS COL-LG-12 -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <!-- INCIDENTS TEXT START-->
+                <div class="row">
+                    <div class="col-lg-7">
+                        <h3 style="text-align: center">Incidents</h3>
+                    </div>
+                </div>
+                <!-- INCIDENT TEXT END -->
+                <!-- INCIDENTS COL -->
+                <div class="row">
+                    <div class="col-lg-7 rounded">
+                        <div class="rounded" style="border: 2px solid black">
+                            <!-- PARENT CATEGORY START -->
+                            <div class="row" style="margin: 8px">
+                                <div class="col-lg-12 rounded">
+                                    <br />
+                                    <select class="form-control" id="categoryList">
+                                        <option selected>Filter by category</option>
+                                        <option>Status</option>
+                                        <option>Zip</option>
+                                        <option>Type</option>
+                                        <option>Location</option>
+                                    </select>
+                                    <hr class="m-3" />
+                                </div>
+                            </div>
+                            <!-- PARENT CATEGORY END -->
+                            <!-- CHILD CATEGORY START -->
+                            <div class="row" style="margin: 8px">
+                                <div class="col-lg-12 rounded" style="display: none; text-align: center"
+                                    id="displayStatus">
+                                    <select class="form-control childSelector" id="statusChildList">
+                                        <option selected>Choose Status</option>
+                                        <% let remove_multiple = [] %>
+                                        <% for(var i=0; i < data.length; i++) { %>
+                                        <%remove_multiple.push( data[i].Status.statusName) %>
+                                        <% } %>
+                                        <%remove_multiple = [...new Set(remove_multiple)] %>
+                                        <%for(var i=0; i < remove_multiple.length; i++) { %>
+                                        <option><%= remove_multiple[i] %></option>
+                                        <% } %>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- CHILD CATGEGORY END -->
+                            <!-- CHILD CATEGORY START -->
+                            <div class="row" style="margin: 8px">
+                                <div class="col-lg-12 rounded" style="display: none; text-align: center"
+                                    id="displayZip">
+                                    <select class="form-control" id="zipChildList">
+                                        <option selected>Choose Zip</option>
+                                        <% remove_multiple = [] %>
+                                        <% for(var i=0; i < data.length; i++) { %>
+                                        <%remove_multiple.push(data[i].Location.Zipcode.zipCode) %>
+                                        <% } %>
+                                        <%remove_multiple = [...new Set(remove_multiple)] %>
+                                        <%for(var i=0; i < remove_multiple.length; i++) { %>
+                                        <option><%= remove_multiple[i] %></option>
+                                        <% } %>
+                                        <option>94747</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- CHILD CATGEGORY END -->
+                            <!-- CHILD CATEGORY START -->
+                            <div class="row" style="margin: 8px">
+                                <div class="col-lg-12 rounded" style="display: none; text-align: center"
+                                    id="displayType">
+                                    <select class="form-control" id="typeChildList">
+                                        <option selected>Choose Type</option>
+                                        <% remove_multiple = [] %>
+                                        <% for(var i=0; i < data.length; i++) { %>
+                                        <%remove_multiple.push(data[i].Type.typeName) %>
+                                        <% } %>
+                                        <%remove_multiple = [...new Set(remove_multiple)] %>
+                                        <%for(var i=0; i < remove_multiple.length; i++) { %>
+                                        <option><%= remove_multiple[i] %></option>
+                                        <% } %>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- CHILD CATGEGORY END -->
+                            <!-- CHILD CATEGORY START -->
+                            <div class="row" style="margin: 8px">
+                                <div class="col-lg-12 rounded" style="display: none; text-align: center;"
+                                    id="displayLocation">
+                                    <select class="form-control" id="locationChildList">
+                                        <option selected>Choose Location</option>
+                                        <% remove_multiple = [] %>
+                                        <% for(var i=0; i < data.length; i++) { %>
+                                        <%remove_multiple.push(data[i].Location.locationName) %>
+                                        <% } %>
+                                        <%remove_multiple = [...new Set(remove_multiple)] %>
+                                        <%for(var i=0; i < remove_multiple.length; i++) { %>
+                                        <option><%= remove_multiple[i] %></option>
+                                        <% } %>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- CHILD CATGEGORY END -->
+                            <div class="col-lg-12">
+                                <div class="row rounded">
+                                    <div class="col-lg-12">
+                                        <span id="showingX">Showing </span>
+                                        <span class="showing_x_of">1</span>
+                                        <span>-</span>
+                                        <span class="incidentNumberView"><%= data.length %></span>
+                                        <span> of </span>
+                                        <span class="totalNumberOfIncidents"><%= data.length %></span>
+                                        <span> Incidents</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- ICON KEY START -->
+                            <div class="row rounded" style="border: 2px solid grey; margin: 8px">
+                                <div class="col-lg-12">
+                                    <div class="row">
+                                        <div class="col-lg-12 text-center">
+                                            <b><u>Key Legend</u></b></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <i class="material-icons" style="vertical-align: bottom">pin_drop</i>
+                                            Location
+                                        </div>
+                                        <div class="col-lg-6"><i class="material-icons" style="vertical-align: bottom">
+                                                report
+                                            </i> Type
+                                        </div>
+                                    </div>
+                                    <hr class="m-1" style="border: 1px solid white" />
+                                    <div class="row">
+                                        <div class="col-lg-6"><i class="material-icons" style="vertical-align: bottom">
+                                                today
+                                            </i>
+                                            Date
+                                        </div>
+                                        <div class="col-lg-6"><i class="material-icons" style="vertical-align: bottom">
+                                                build
+                                            </i> Status
+                                        </div>
+                                    </div>
+                                    <hr class="m-1" style="border: 1px solid white" />
+                                </div>
+                            </div>
+                            <!-- ICON KEY END -->
+                            <!-- err msg START -->
+                            <div class="row rounded" style="border: 2px solid red; margin: 8px; display: none"
+                                id="no_results_msg">
+                                <div class="col-lg-12">
+                                    <div class="row">
+                                        <div class="col-lg-12 text-center">
+                                            <h4>Your search returned no results 😕</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- err msg END -->
+                            <!-- ONE INCIDENT START-->
+                            <% for(var i=0; i < data.length; i++) { %>
+                            <a href="/incidents/view/<%=data[i].incidentId%>"
+                                style="color: black; text-decoration: none">
+                                <div class="row rounded cardView" style="border: 2px solid black; margin: 8px">
+                                    <div class="col-lg-4" id="incidentPicture">
+                                        <br />
+                                        <img src="data:image/jpg;charset=utf-8;base64,<%= data[i].images[0].thumbnail %>"
+                                            alt="..." class="img-thumbnail  m-1"
+                                            style="width: max-content; height: inherit" />
+                                    </div>
+                                    <div class="col-lg-8">
+                                        <br />
+                                        <i class="material-icons" style="vertical-align: bottom">pin_drop</i>
+                                        <span style="text-align: left"
+                                            class="locationCheck"><%= data[i].Location.locationName %></span>
+                                        <span> |</span>
+                                        <span id="zip" class="zipCheck"><%= data[i].Location.Zipcode.zipCode %></span>
+                                        <hr class="m-1" />
+                                        <i class="material-icons" style="vertical-align: bottom">
+                                            today
+                                        </i>
+                                        <span style="text-align: left" class="parseDate"><%= data[i].createdAt %></span>
+                                        <hr class="m-1" />
+                                        <i class="material-icons" style="vertical-align: bottom">
+                                            report
+                                        </i>
+                                        <span style="text-align: left"
+                                            class="typeCheck"><%= data[i].Type.typeName %></span>
+                                        <hr class="m-1" />
+                                        <i class="material-icons" style="vertical-align: bottom">
+                                            build
+                                        </i>
+                                        <span style="text-align: left"><b id="status"
+                                                class="statusCheck"><%= data[i].Status.statusName %></b></span>
+                                        <br />
+                                        <br />
+                                    </div>
+                                </div>
+                            </a>
+                            <% } %>
+                            <!-- ONE INCIDENT END -->
+                        </div>
+                    </div>
+                    <!-- MAP START-->
+                    <div class="col-lg-5 rounded" style="border: 2px solid slategray; height: 800px;  padding: 0">
+                        <div id="map" style="height: 100%;"></div>
+                    </div>
+                    <!-- MAP END-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // MAP JAVASCRIPT START
+        var map;
+        var gmarkers = [];
+
+        async function initMap() {
+            map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 12
+            });
+            var geocoder = new google.maps.Geocoder();
+            await geocodeAddress(geocoder, map);
+        }
+
+        function geocodeAddress(geocoder, resultsMap) {
+            var address = document.getElementsByClassName("locationCheck");
+            Array.from(address).forEach(function (item) {
+                geocoder.geocode({
+                    address: item.innerText
+                }, function (
+                    results,
+                    status
+                ) {
+                        if (status === "OK") {
+                            resultsMap.setCenter({
+                                lat: 37.723396,
+                                lng: -122.442264
+                            });
+                            var marker = new google.maps.Marker({
+                                map: resultsMap,
+                                position: results[0].geometry.location,
+                                animation: google.maps.Animation.DROP,
+                                address: item.innerText
+                            });
+                            gmarkers.push(marker);
+                        } else {
+                            alert(
+                                "Geocode was not successful for the following reason: " + status
+                            );
+                        }
+                    });
+            });
+        }
+        // MAP JAVASCRIPT END
+        let statusColor = document.getElementsByClassName("statusCheck");
+        Array.from(statusColor).forEach(function (item) {
+            switch (item.innerHTML) {
+                case "Resolved":
+                    item.style.color = "rgb(47, 197, 17)";
+                    break;
+                case "Reviewed":
+                    item.style.color = "gold";
+                    break;
+                case "Received":
+                    item.style.color = "rgb(64, 137, 247)";
+                    break;
+                case "Archived":
+                    item.style.color = "rgb(149, 165, 179)";
+                    break;
+            }
+        });
+        let parseDate = document.getElementsByClassName("parseDate");
+        Array.from(parseDate).forEach(function (item) {
+            item.innerText = item.innerText.substring(0, 16)
+        });
+
+        $("#categoryList").change(function () {
+            var getText = $("#categoryList option:selected").text();
+            switch (getText) {
+                case "Status":
+                    refreshDisplayAll();
+                    hide_results_msg();
+                    $("#displayZip").hide();
+                    $("#zipChildList")[0].selectedIndex = 0
+                    $("#displayType").hide();
+                    $("#typeChildList")[0].selectedIndex = 0
+                    $("#displayLocation").hide();
+                    $("#locationChildList")[0].selectedIndex = 0
+                    $("#displayStatus").slideDown("fast", function () {
+                        $("#statusChildList").change(function () {
+                            var getText = $("#statusChildList option:selected").text();
+                            checkFilterMatch(getText, "statusCheck");
+                        });
+                    });
+                    break;
+                case "Zip":
+                    refreshDisplayAll();
+                    hide_results_msg();
+                    $("#displayStatus").hide();
+                    $("#statusChildList")[0].selectedIndex = 0
+                    $("#displayType").hide();
+                    $("#typeChildList")[0].selectedIndex = 0
+                    $("#displayLocation").hide();
+                    $("#locationChildList")[0].selectedIndex = 0
+                    $("#displayZip").slideDown("fast", function () {
+                        $("#zipChildList").change(function () {
+                            var getText = $("#zipChildList option:selected").text();
+                            checkFilterMatch(getText, "zipCheck");
+                        });
+                    });
+                    break;
+                case "Type":
+                    refreshDisplayAll();
+                    hide_results_msg();
+                    $("#displayStatus").hide();
+                    $("#statusChildList")[0].selectedIndex = 0
+                    $("#displayZip").hide();
+                    $("#zipChildList")[0].selectedIndex = 0
+                    $("#displayLocation").hide();
+                    $("#locationChildList")[0].selectedIndex = 0
+                    $("#displayType").slideDown("fast", function () {
+                        $("#typeChildList").change(function () {
+                            var getText = $("#typeChildList option:selected").text();
+                            checkFilterMatch(getText, "typeCheck");
+                        });
+                    });
+                    break;
+                case "Location":
+                    refreshDisplayAll();
+                    hide_results_msg();
+                    $("#displayType").hide();
+                    $("#typeChildList")[0].selectedIndex = 0
+                    $("#displayStatus").hide();
+                    $("#statusChildList")[0].selectedIndex = 0
+                    $("#displayZip").hide();
+                    $("#zipChildList")[0].selectedIndex = 0
+                    $("#displayLocation").slideDown("fast", function () {
+                        $("#locationChildList").change(function () {
+                            var getText = $("#locationChildList option:selected").text();
+                            checkFilterMatch(getText, "locationCheck");
+                        });
+                    });
+                    break;
+                case "Filter by category":
+                    refreshDisplayAll();
+                    hide_results_msg();
+                    $("#displayType").hide();
+                    $("#typeChildList")[0].selectedIndex = 0
+                    $("#displayStatus").hide();
+                    $("#statusChildList")[0].selectedIndex = 0
+                    $("#displayZip").hide();
+                    $("#zipChildList")[0].selectedIndex = 0
+                    $("#displayLocation").hide();
+                    $("#locationChildList")[0].selectedIndex = 0
+                    break;
+            }
+        });
+
+        function checkFilterMatch(search_value, className) {
+            let incidentNumberView = 0;
+            let cardView = document.getElementsByClassName("cardView");
+            for (let i = 0; i < cardView.length; i++) {
+                let card_text, address_for_marker;
+                card_text = cardView[i].lastElementChild;
+                address_for_marker = card_text.getElementsByClassName(
+                    "locationCheck"
+                )[0].innerText;
+                card_text = card_text.getElementsByClassName(className)[0].innerText;
+                if (search_value == card_text) {
+                    hide_results_msg();
+                    document.getElementsByClassName("showing_x_of")[0].innerText = 1;
+                    incidentNumberView++;
+                    cardView[i].style.display = "";
+                    updateIncidentNumber(incidentNumberView);
+                    showPins(i);
+                } else {
+                    cardView[i].style.display = "none";
+                    removePin(i);
+                }
+            }
+            if (incidentNumberView == 0) {
+                document.getElementsByClassName("showing_x_of")[0].innerText = 0;
+                updateIncidentNumber(incidentNumberView);
+                removePins();
+                zero_results_msg();
+            }
+        }
+
+        function refreshDisplayAll() {
+            resetPins();
+            document.getElementsByClassName("showing_x_of")[0].innerText = 1;
+            document.getElementsByClassName("incidentNumberView")[0].innerText =
+                gmarkers.length;
+            document.getElementsByClassName("totalNumberOfIncidents")[0].innerText =
+                gmarkers.length;
+            displayAllCards();
+        }
+
+        function removePins() {
+            for (let i = 0; i < gmarkers.length; i++) {
+                gmarkers[i].setMap(null);
+            }
+        }
+
+        function resetPins() {
+            for (let i = 0; i < gmarkers.length; i++) {
+                gmarkers[i].setMap(map);
+            }
+        }
+        function showPins(i) {
+            gmarkers[i].setMap(map)
+        }
+
+        function removePin(i) {
+            gmarkers[i].setMap(null)
+        }
+
+        function updateIncidentNumber(search_value) {
+            document.getElementsByClassName(
+                "incidentNumberView"
+            )[0].innerText = search_value;
+            document.getElementsByClassName(
+                "totalNumberOfIncidents"
+            )[0].innerText = search_value;
+        }
+
+        function displayAllCards() {
+            Array.from(document.getElementsByClassName("cardView")).forEach(
+                function (item) {
+                    item.style.display = "";
+                }
+            );
+        }
+
+        function zero_results_msg() {
+            $('#no_results_msg').slideDown('fast');
+
+        }
+        function hide_results_msg() {
+            $('#no_results_msg').hide();
+        }
+
+    </script>
+    <footer>
+        <%-include ../views/partials/footer.ejs%>
+    </footer>
+</body>
+
+</html>

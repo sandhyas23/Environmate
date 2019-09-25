@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title><%=title%></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href= "/stylesheets/jjform.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+</head>
+
+<body>
+    <div class ="unique">
+    <div class = "container-full rounded">
+            <h1>Registration Form</h1>
+        <form name="registration" action="/about/forms/confirmation" onsubmit="return validateForm()" method = "POST">
+            
+            <div class = "border"> <!-- Border-->
+                <div class = "title"> 
+                    Contact information
+                </div>
+                <div class = "row form"> <!-- name info-->
+                    <div class = "col-md-12">
+                        <input type="text" name = "firstName" required pattern=[a-zA-Z-]{2,20} placeholder="First Name">
+                    </div>
+                </div>
+                <div class = "row form">
+                    <div class = "col-md-12">
+                        <input type = "text" name = "lastName" required pattern=[a-zA-Z-]{2,20} placeholder="Last Name">
+                    </div>
+                </div> <!--End name info-->
+                <div class = "row form"> <!--Email information-->
+                    <div class = "col-md-12">
+                        <input type="email" name = "email" maxlength="40" placeholder="Email Address">
+                    </div>
+                </div>
+                <div class = "row form">
+                    <div class = "col-md-12">
+                        <input type = "email" name = "reEmail" maxlength="40" placeholder="Re-enter Email Address">
+                    </div>
+                </div> <!--End Email info-->
+                <div class="row form"><!--Phone-->
+                    <div class = "col-md-12">
+                        <input type="tel" name = "phone" maxlength="7" required pattern="[0-9]{7}" placeholder="Phone # - ex: 1234567">
+                    </div>
+                </div><!--end phone-->
+            </div><!--end border-->
+            <div class = "title" id="spacing">
+                    Optional Questionaire
+            </div> <!-- questionaire-->
+            <div class = "row form">
+                <div class = "col-md-12">
+                    <select name = "education">
+                        <option value="Not Provided">Select Your Education Level</option>
+                        <option value="High School/GED">High School/GED</option>
+                        <option value="College">College</option>
+                        <option value="Graduate Studies">Graduate Studies</option>
+                        <option value="Ph.D">Ph.D</option>
+                    </select>
+                </div>
+            </div>
+            <div class = "row form">
+                <div class = "col-md-12">
+                    <select name = "income">
+                        <option value="Not Provided">Select Your Income Level</option>
+                        <option value="$0 - $50,000">$0 - $50,000</option>
+                        <option value="$50,000 - $100,000">$50,000 - $100,000</option>
+                        <option value="$100,000 +">$100,000 +</option>
+                    </select>
+                </div>
+            </div> <!--End questionaire-->
+            <div class = "title" id="spacing"> <!--address info-->
+                Address information
+            </div>
+            <div class = "row form">
+                <div class = "col-md-12">
+                    <input type="text" name = "address" required maxlength="35" pattern=[0-9]{3,5}\s[a-zA-Z]{3,5}[a-zA-Z\s\.#]{0,25}
+                        placeholder="Street Address ex: 123 main street">
+                </div>  
+            </div>
+            <div class = "row form">
+                <div class = "col-md-12">
+                    <input type="text" name="zipCode" required pattern=[0-9]{5} placeholder="Zip Code  ex. 12345">
+                </div>
+            </div><!-- end address info -->
+            <div class = "border" id="spacing">
+            <div class ="row form" > <!-- TOU-->
+                <div class = "col-md-12">
+                    By selecting the check box you agree to the terms and conditions.*
+                </div>
+            </div>
+            <div class ="row">
+                <div class = "col-md-12 checkbox">
+                    <input type="checkbox" name="TOU" required>
+                </div>
+            </div><!--end TOU-->
+            </div>
+            <div class="row">
+                <div class = "text-xs-center" id="spacing">
+                    <div class="g-recaptcha" id="rcaptcha" data-sitekey="6LfeXawUAAAAAEwnB2o4oyL6WOK_-qTTewwJ_m-O">
+                    </div>
+                </div>    
+            </div>
+            <span id="captcha" style="margin-left:100px;color:red" />
+
+            <div class ="row form"><!--Buttons-->
+                <div class="form col-md-12">
+                    <input type="submit" name="Submit" value="Send">
+                </div>
+            </div>
+            <div class = "row form">
+                <div class="form col-md-12">
+                    <input type="reset" name=" Cancel" value="Clear">
+                </div>
+            </div> <!--end buttons-->
+        </form> <!--end form-->
+    </div><!--container div-->
+</div>
+</body>
+
+
+<script>
+function validateForm() {
+  var email = document.forms["registration"]["email"].value;
+  var reEmail = document.forms["registration"]["reEmail"].value;
+  if (email != reEmail) {
+    alert("Emails do not match");
+    return false;
+  }
+  var v = grecaptcha.getResponse(rcaptcha);
+  
+    if(v.length == 0)
+    {
+        alert("Captcha is required");
+        return false;
+    }
+    else
+    {
+        return true; 
+    }
+    //production key: 6LfeXawUAAAAAEwnB2o4oyL6WOK_-qTTewwJ_m-O
+    //testing key: 6Lf0XawUAAAAAGRLqNdNBytt4eOMBRVQeDk36_EF
+}
+</script>
+</html>
